@@ -6,14 +6,14 @@ Welcome back! I'm sure you've been looking forward to this next assignment as mu
 
 ## Overview of the Lab
 
-Before jumping into the weeds, I'm going to provide a summary of the things you'll be doing and the overall goal of the assignment and the tasks I'll be asking you to accomplish. 
+Before jumping into the weeds, I'm going to provide a summary of the things you'll be doing and the overall goal of the assignment/tasks I'll be asking you to accomplish. 
 
-In short, we're going to be building a portion of a data warehouse from scratch, starting with raw source data from two external "systems", then progressively transforming and improving that data in a series of warehouse tables that roughly follow the bronze, silver, and gold layers we've discussed in the past. (Of course, a complete warehouse build is too big a task for a single assignment, so we'll be doing enough to get a feel for it without going too far into the redunancies.) Here are the general steps you'll be following:
-1. First (and before we even setup our dbt environment), we're going to load some "source" data into a dedicated schema that will represent the "external system" from which that data is supposedly coming. This will give us a chance to remind ourselves how to use Snowflake (!), and should be a nice warmup exercise.
+In short, we're going to be building a portion of a data warehouse from scratch, starting with raw source data from two external "systems", then progressively transforming and improving that data in a series of warehouse tables that roughly follow the bronze, silver, and gold layers we've discussed in the past. (Of course, a complete warehouse build is too big a task for a single assignment, so we'll be doing enough to get a feel for it without going too far into the redundancies.) Here are the general steps you'll be following:
+1. First (and before we even set up our dbt environment), we're going to load some "source" data into a dedicated schema that will represent the "external system" from which that data is supposedly coming. This will give us a chance to remind ourselves how to use Snowflake (!), and should be a nice warmup exercise.
 2. Next, we'll ensure that you have dbt available and configured to run in your local environment, and we'll step through a sample model that I've created for you to use as a reference when you go to build out your own models.
 3. Here's where the fun begins: we'll start with the simpler of two data pipelines that will pass data through the warehouse. These pipelines will start with the _bronze layer_ (comprised of "sources", "base models", and "seeds", to use the dbt terms). From these, we'll derive the _silver layer_ in the form of "staging" and "intermediate" tables, in which we'll do some light cleaning, renaming, and otherwise enriching the data to support a few downstream analyses. 
-4. As if that wasn't enough, we'll then go through the process _again_, this time with some slightly more challenging semi-structured data. We'll take those data through a similar flow ("sources", "base models", then "staging" and "intermediate" tables). 
-5. We'll finish up with a few small examples of _gold layer_ analysis models that use the data we've prepare in the _silver_ tables to inform a few realistic use cases. (It turns out that we'll just scratch the surface of the _gold_ assets that we'd typically see, but them's the breaks, as they say.) 
+4. As if that wasn't enough, we'll then go through the process _again_, this time with some slightly more challenging semi-structured data. We'll take that data through a similar flow ("sources", "base models", then "staging" and "intermediate" tables). 
+5. We'll finish up with a few small examples of _gold layer_ analysis models that use the data we've prepared in the _silver_ tables to inform a few realistic use cases. (It turns out that we'll just scratch the surface of the _gold_ assets that we'd typically see, but them's the breaks, as they say.) 
 
 > "Okay, already. Let's start building." 
 
@@ -71,7 +71,7 @@ Okay. Enough context. Let's get started, shall we?
 
 ## Task 1: Snowflake Prep Work
 
-It's time to dust off those Snowflake skills and get a few things set up in Snowflake. We've talked about all of the things you'll do for this task, but it's been a little while. I'm sure it'll come right back to you, like riding a bike.
+It's time to dust off those Snowflake skills and get a few things set up in Snowflake. We've talked about all of the things you'll do for this task, but it's been a little while. I'm sure it'll come right back to you, just like riding a bike.
 
 You'll be incorporating data from two hypothetical systems. One of these is an OLTP database that I've prepared for you within our classroom account (and we'll come back to that data in the next task). The other source of data is one that you'll be loading yourself in your own database (e.g., `EAGLE_DB`).  
 
@@ -104,7 +104,7 @@ Just to give you a checklist beyond what I walk through in the video linked abov
 1. Open a terminal in your assignment repository folder.
 2. Activate (or create if necessary) your dedicated `dbt` conda environment. (If you're creating your conda environment, just install `python=3.12`, `dbt-core` and `dbt-snowflake`.)
 3. Ensure that you have a profile in your `.dbt/profiles.yml` that matches the `profile:` line in the `dbt_project.yml` file in the assignment folder. **The profile should be configured to use a schema called `dbt` in your database**.
-4. Run `dbt debug` in the assignment folder, and verify that you can connect succesfully.
+4. Run `dbt debug` in the assignment folder, and verify that you can connect successfully.
 
 (Again, if any of the above doesn't make sense, check out the video I linked above for a detailed walkthrough of how dbt configuration works.)
 
@@ -112,7 +112,7 @@ Just to give you a checklist beyond what I walk through in the video linked abov
 
 ### 2.2 - Run the Existing Model
 
-Assuming your `dbt debug` command was succesful, you should be able to just run `dbt build` without making any other changes. If all goes well, you'll see the `stg_adventure_db__inventory` model run successfully, and you'll likely see a nice green "SUCCESS" message in your terminal like my screenshot below.
+Assuming your `dbt debug` command was successful, you should be able to just run `dbt build` without making any other changes. If all goes well, you'll see the `stg_adventure_db__inventory` model run successfully, and you'll likely see a nice green "SUCCESS" message in your terminal like my screenshot below.
 
 <img src="566/screenshots/readme_img/first_dbt.png"  width="80%">
 
@@ -139,7 +139,7 @@ While we're here on the outskirts of the _bronze_ layer of the warehouse, though
 
 The seed files I've included (see `566/data/seed_files/`) are very small "labeling helpers" that we can use to help us refine some column names in a minute. Sometimes we use little files like this as a convenience (or security) strategy when the reference material being stored is too trivial to justify a separate database/schema. dbt allows us to store small files like this right in the repository, and it takes care of creating a little reference table alongside the other dbt-managed resources in the warehouse so can use the reference data as needed.
 
-Move the files from `566/data/seed_files/` to their rightful place in the `seeds/` folder. Now that the files are in a directory identified in the `seed-paths` attribute in the `dbt_project.yml`, dbt will generate and maintain a table for each of the files. dbt is acctually pretty smart about guessing the right structure and datatypes for those tables, but it's also possible to explicitly configure the seeds with a few features. Rather than make you go learn about [obscure seed configuration options](https://docs.getdbt.com/reference/seed-configs), though, I'll just give you the contents of a file you can add to the `seeds/` folder. This file can be called whatever you'd like, but by convetion, it's called `_seeds.yml`. (The underscore is so that it always sorts at the top of the directory.)
+Move the files from `566/data/seed_files/` to their rightful place in the `seeds/` folder. Now that the files are in a directory identified in the `seed-paths` attribute in the `dbt_project.yml`, dbt will generate and maintain a table for each of the files. dbt is actually pretty smart about guessing the right structure and datatypes for those tables, but it's also possible to explicitly configure the seeds with a few features. Rather than make you go learn about [obscure seed configuration options](https://docs.getdbt.com/reference/seed-configs), though, I'll just give you the contents of a file you can add to the `seeds/` folder. This file can be called whatever you'd like, but by convetion, it's called `_seeds.yml`. (The underscore is so that it always sorts at the top of the directory.)
 
 ```yaml
 version: 2
@@ -186,10 +186,10 @@ Okay! So let's build these four staging models, in the order I present them belo
 
 #### `stg_adventure_db__vendors` and `stg_adventure_db__customers`
 
-- These will both follow a similiar (and simple) approach.
-- Rememeber that you can copy the structure of the existing inventory model
+- These will both follow a similar (and simple) approach.
+- Remember that you can copy the structure of the existing inventory model
 - Be sure to follow the "snake_case" naming convention we're using everywhere else
-- That's actually it...these two are very straghtforward.
+- That's actually it...these two are very straightforward.
 
 #### `stg_adventure_db__product_vendors`
 
@@ -216,7 +216,7 @@ Wasn't that fun? I thought so, too. If all went well, you should be able to run 
 
 Before we move on to the second pipeline, just a quick configuration change that will help you verify that your work matches mine from here on out. 
 
-You may have noticed that just 2 of the 7 "SUCCESS" messages in the output above have metadata about rows being inserted into the database, with the rest defaulting to views. There's nothing wrong with views, but in my experience they are generally reserved for the later stages of a data warehouse pipeline. Somewhere in the middle of the warehouse pipeline, we should reach a point where the data "stablizes" in a sense, meaning that we've cleaned up, relabeled, and otherwise refined the data from a given source system such that it's ready to be stored in the warehouse for long term accumulation and use. It usually makes sense for these models to become tables, and we can assume that our `adventure_db` tables fit those critertia.
+You may have noticed that just 2 of the 7 "SUCCESS" messages in the output above have metadata about rows being inserted into the database, with the rest defaulting to views. There's nothing wrong with views, but in my experience they are generally reserved for the later stages of a data warehouse pipeline. Somewhere in the middle of the warehouse pipeline, we should reach a point where the data "stabilizes" in a sense, meaning that we've cleaned up, relabeled, and otherwise refined the data from a given source system such that it's ready to be stored in the warehouse for long term accumulation and use. It usually makes sense for these models to become tables, and we can assume that our `adventure_db` tables fit those criteria.
 
 With that (unsolicited, I know) background, let's make a change to the dbt configuration to ensure that all models leading up to the staging tables are _materialized_ as tables, while those in the intermediate layer remain views.
 
@@ -228,7 +228,7 @@ What you're looking to see in your output is what you see in my screenshot below
 
 <img src="566/screenshots/readme_img/switch_to_tables.png"  width="80%">
 
-Also, if you glance at the `dbt` schema in your database, you'll see those new tables, but you'll likely also see those views still hanging around. This is because dbt intentionally does not support deleting of old tables or views as part of the build process. You can imagine that the risk of that having unintended consequences is pretty high. So dbt only affects the objects that are still defined as models in the project (meaning that it will happily replace the data in a table or view that it is managing each time it runs, but renamed or abandonded objects will just stay out there unless you manually drop them).
+Also, if you glance at the `dbt` schema in your database, you'll see those new tables, but you'll likely also see those views still hanging around. This is because dbt intentionally does not support deleting of old tables or views as part of the build process. You can imagine that the risk of that having unintended consequences is pretty high. So dbt only affects the objects that are still defined as models in the project (meaning that it will happily replace the data in a table or view that it is managing each time it runs, but renamed or abandoned objects will just stay out there unless you manually drop them).
 
 When your data is small and you're in active, iterative development, the easiest way to get rid of the fluff is to just drop the whole `dbt` schema. I personally just keep an SQL file open in my environment with a few such commands so I can use them to "reset" as needed.
 
@@ -274,7 +274,7 @@ Okay, with those base tables configured, we can do another `dbt build` to see th
 
 ### 4.2 - Add `ecom` Staging Tables
 
-These last three staging models will be similar to those in the adventure_db, except with a few additional considerations. We'll look at them from easiest to most difficult:
+These last three staging models will be similar to those in the adventure_db, with a few additional considerations. We'll look at them from easiest to most difficult:
 
 #### `stg_ecom__purchase_orders`
 
@@ -287,14 +287,14 @@ These last three staging models will be similar to those in the adventure_db, ex
 
 - This stage table should read from the sales orders base table (which already has formatting applied). 
 - You'll need to join in data from the ship_methods seed file to extract the name (rather than the id) of the shipping method. 
-- Lastly, look carefully at the values in `delivery_estimate` column. These messy data need to be cleaned up before the data can move further downstream. The goal is to replace that column with a numeric column called `delivery_estimate_days` that measures the delivery estimates in a single unit of measurement. You're welcome to just use a basic CASE statement to match the existing set of values, but you coud also have some fun thinking about how to match a little more flexibly with some regular expressions. (No pressure.)
+- Lastly, look carefully at the values in `delivery_estimate` column. These messy data need to be cleaned up before the data can move further downstream. The goal is to replace that column with a numeric column called `delivery_estimate_days` that measures the delivery estimates in a single unit of measurement. You're welcome to just use a basic CASE statement to match the existing set of values, but you could also have some fun thinking about how to match a little more flexibly with some regular expressions. (No pressure.)
 
 #### `stg_ecom__email_campaigns`
 
 - This data has also already been extracted and formatted with datatypes in the base table, so most of the columns can just be passed through. 
 - You will also turn the campaign_id column into 4 new columns that represent the different elements embedded in the campaign_id, namely `customer_segment`, `product_category`, and `ad_strategy`.
 - You also should add a new binary flag column called `is_converted` that uses the presence or absence of an order_id to fill in the column with a 1 or a 0. 
-- You may not have notice this yet, there are actually duplicate records in the email campaigns base table (The event_id should be a unique primary key in that table.) So your query for this staging table should take care of de-duplicating the data (keeping the most recent event in the case where there are more than one even with the same event_id). I would recommend doing this in a CTE called "deduped", and I would also look into how the `QUALIFY` command works.
+- You may not have noticed this yet, there are actually duplicate records in the email campaigns base table (The event_id should be a unique primary key in that table.) So your query for this staging table should take care of de-duplicating the data (keeping the most recent event in the case where there are more than one even with the same event_id). I would recommend doing this in a CTE called "deduped", and I would also look into how the `QUALIFY` command works.
 
 Okay this is exciting! We're up to 12 different tables that dbt is managing for us, and if you've got everything up and running, you'll have another terminal window full of green messages like below:
 
@@ -318,7 +318,7 @@ The last models we'll add will be closer to the business use cases related to th
 
 #### `int_sales_orders_with_campaign`
 
-- The scenario for this model is that the business would like to understand the sales activities of various product cagetories as they relate to some email marketing campaigns the company has been running. So the goal is to simply connect the sales data with the campaign data.
+- The scenario for this model is that the business would like to understand the sales activities of various product categories as they relate to some email marketing campaigns the company has been running. So the goal is to simply connect the sales data with the campaign data.
 - Because I'm the one who made up the email campaign data, I'll just tell you: the campaign data has exactly one row for each order_id where the `event_type` is "conversion". Filtering to just those event types would be a nice way to get a joinable set of campaign data (you should join on order_id).
 - The sales order data (which is larger than the campaign data) should form the basis for this dataset. \*Sniff, sniff\*. I smell a left join.
 - You should also add a binary `is_campaign_conversion` column that is populated conditionally based on whether there is campaign data available for a given order_id.

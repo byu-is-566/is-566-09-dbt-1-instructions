@@ -13,7 +13,6 @@ In short, we're going to be building a portion of a data warehouse from scratch,
 2. Next, we'll ensure that you have dbt available and configured to run in your local environment, and we'll step through a sample model that I've created for you to use as a reference when you go to build out your own models.
 3. Here's where the fun begins: we'll start with the simpler of two data pipelines that will pass data through the warehouse. These pipelines will start with the _bronze layer_ (comprised of "sources", "base models", and "seeds", to use the dbt terms). From these, we'll derive the _silver layer_ in the form of "staging" and "intermediate" tables, in which we'll do some light cleaning, renaming, and otherwise enriching the data to support a few downstream analyses. 
 4. As if that wasn't enough, we'll then go through the process _again_, this time with some slightly more challenging semi-structured data. We'll take that data through a similar flow ("sources", "base models", then "staging" and "intermediate" tables). 
-5. We'll finish up with a few small examples of _gold layer_ analysis models that use the data we've prepared in the _silver_ tables to inform a few realistic use cases. (It turns out that we'll just scratch the surface of the _gold_ assets that we'd typically see, but them's the breaks, as they say.) 
 
 > "Okay, already. Let's start building." 
 
@@ -21,9 +20,7 @@ Not quite yet. Because there are _a lot_ of different files involved in building
 
 ```bash
 is-566-09-dbt-1
-├── analyses           
-│   ├── campaign_sales_analysis.sql     # << Part 5    
-│   └── email_campaign_performance.sql  # << Part 5    
+├── analyses              
 ├── dbt_project.yml    
 ├── logs
 ├── macros

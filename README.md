@@ -149,15 +149,11 @@ version: 2
 
 seeds:
   - name: measures
-    config: 
-      alias: stg_seed__measure_labels
     column_types: 
       measure_code: STRING
       measure_name: STRING
 
   - name: ship_method
-    config: 
-      alias: stg_seed__ship_methods
     column_types:
       ship_method_id: INTEGER
       name: STRING

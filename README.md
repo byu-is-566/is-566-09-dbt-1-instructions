@@ -72,6 +72,9 @@ It's time to dust off those Snowflake skills and get a few things set up in Snow
 
 You'll be incorporating data from two hypothetical systems. One of these is an OLTP database that I've prepared for you within our classroom account (and we'll come back to that data in the next task). The other source of data is one that you'll be loading yourself in your own database (e.g., `EAGLE_DB`).  
 
+> [!TIP]
+> Did you know that I provided a full walkthrough and some example code back when we went over this in class? Well, I did. You might find that useful here. Check out the code found here: `is-566-00-in-class-activities/4 - Snowflake stages/commands.sql` and the accompanying walkthrough video [here](https://www.dropbox.com/scl/fi/o7rlfgyzythwo94587vuo/Snowflake-stages-and-file-formats.mov?rlkey=jdxojpxnvsc82bc5blo2zhyuk&dl=0).
+
 Included here in the repository is a data folder with about 300MB of data, all in JSON format. We're going to load these data into three tables, all within a dedicated schema called `ECOM_SOURCE` (which you'll need to create). I've provided a bit of starter SQL code in `566/ecom_stage_and_load.sql` to get you started.
 
 And just to be abundantly clear, this first SQL file has nothing to do with dbt. We just need to get some data up into your individual databases, and rather than loading it for you and having you copy it, I thought it would be good experience for you to do what a data engineer would have to do: load the data.

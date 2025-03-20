@@ -181,7 +181,7 @@ seeds:
       ship_rate: NUMBER
 ```
 
-Now that your seeds are in and configured, you can run `dbt seed` (which will process and insert only the seed files) or `dbt build` (which will do the seed command along with everything else). You should see output like you see in my screenshot below. (And pay particular attention to the effect of that `alias` configuration option that we added to the `.yml` file; this has affected what the seed tables are called in the data warehouse.)
+Now that your seeds are in and configured, you can run `dbt seed` (which will process and insert only the seed files) or `dbt build` (which will do the seed command along with everything else). You should see output like you see in my screenshot below. 
 
 <img src="566/screenshots/readme_img/seed_run.png"  width="80%">
 

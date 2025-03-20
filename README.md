@@ -311,7 +311,7 @@ These last three staging models will be similar to those in the adventure_db, wi
 #### `stg_ecom__email_campaigns`
 
 - This data has also already been extracted and formatted with datatypes in the base table, so most of the columns can just be passed through. 
-- You will also turn the campaign_id column into 4 new columns that represent the different elements embedded in the campaign_id, namely `customer_segment`, `product_category`, and `ad_strategy`.
+- You will also turn the `campaign_id` column into 4 total columns that represent the different elements embedded in the `campaign_id`, namely `customer_segment`, `product_category`, and `ad_strategy` (and retain the `campaign_id` column).
 - You also should add a new binary flag column called `is_converted` that uses the presence or absence of an order_id to fill in the column with a 1 or a 0. 
 - You may not have noticed this yet, there are actually duplicate records in the email campaigns base table (The event_id should be a unique primary key in that table.) So your query for this staging table should take care of de-duplicating the data (keeping the most recent event in the case where there are more than one even with the same event_id). I would recommend doing this in a CTE called "deduped", and I would also look into how the `QUALIFY` command works.
 

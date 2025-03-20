@@ -337,7 +337,7 @@ The last models we'll add will be closer to the business use cases related to th
 
 #### `int_sales_orders_with_campaign`
 
-- The scenario for this model is that the business would like to understand the sales activities of various product categories as they relate to some email marketing campaigns the company has been running. So the goal is to simply connect the sales data with the campaign data.
+- The scenario for this model is that the business would like to understand the sales activities of various product categories as they relate to some email marketing campaigns the company has been running. So the goal is to simply connect the sales data (i.e., `stg_ecom__sales_orders`) with the campaign data (i.e., `stg_ecom__email_campaigns`).
 - Because I'm the one who made up the email campaign data, I'll just tell you: the campaign data has exactly one row for each order_id where the `event_type` is "conversion". Filtering to just those event types would be a nice way to get a joinable set of campaign data (you should join on order_id).
 - The sales order data (which is larger than the campaign data) should form the basis for this dataset. \*Sniff, sniff\*. I smell a left join.
 - You can include all of the columns from the sales_orders model, as well as the 4 campaign label columns (i.e., `campaign_id`, `customer_segment`, `product_category`, `ad_strategy`).

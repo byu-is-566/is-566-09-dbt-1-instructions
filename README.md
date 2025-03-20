@@ -106,8 +106,28 @@ The steps below are a summary of how to ensure that your dbt configuration can t
 Just to give you a checklist beyond what I walk through in the video linked above, here's the things you can do:
 1. Open a terminal in your assignment repository folder.
 2. Activate (or create if necessary) your dedicated `dbt` conda environment. (If you're creating your conda environment, just install `python=3.12`, `dbt-core` and `dbt-snowflake`.)
-3. Ensure that you have a profile in your `.dbt/profiles.yml` that matches the `profile:` line in the `dbt_project.yml` file in the assignment folder. **The profile should be configured to use a schema called `dbt` in your own `USERNAME_db` database**.
+3. Ensure that you have a profile in your `.dbt/profiles.yml` that matches the `profile:` line in the `dbt_project.yml` file in the assignment folder. **The profile should be configured to use a schema called `dbt` in your own `USERNAME_db` database**. (See my example profiles.yml file below.)
 4. Run `dbt debug` in the assignment folder, and verify that you can connect successfully.
+
+Here's what your `.dbt/profiles.yml` file should look like:
+```yaml
+# For the project to work properly, you should have something very similar to 
+# this in your .dbt/profiles.yml
+
+adventure:
+  outputs:
+    dev:
+      account: Your-account    # << change this                    
+      database: USERNAME_DB    # << change this                
+      password: your_password  # << change this                  
+      role: USERNAME_ROLE      # << change this              
+      schema: dbt             
+      threads: 1         
+      type: snowflake    
+      user: YOURUSERNAME       # << change this             
+      warehouse: USERNAME_WH   # << change this                 
+  target: dev
+```
 
 (Again, if any of the above doesn't make sense, check out the video I linked above for a detailed walkthrough of how dbt configuration works.)
 

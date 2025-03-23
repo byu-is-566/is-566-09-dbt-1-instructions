@@ -343,7 +343,7 @@ The last models we'll add will be closer to the business use cases related to th
 - You can include all of the columns from the sales_orders model, as well as the 4 campaign label columns (i.e., `campaign_id`, `customer_segment`, `product_category`, `ad_strategy`).
 - You should also add a binary `is_campaign_conversion` column that is populated conditionally based on whether there is campaign data available for a given order_id.
 
-We could keep going with lots of other intermediate models. But I think we'll hold it there for now. Doing a dbt run will allow us to check 2 things: (1) that our configuration setting from Task 3.3 is being properly applied to the intermediate models (meaning that they are being created as views; see the last two of the 14), and (2) that there's nothing but green success all over that terminal. Screenshot for reference:
+We could keep going with lots of other intermediate models. But I think we'll hold it there for now. Doing a `dbt build` will allow us to check 2 things: (1) that our configuration setting from Task 3.3 is being properly applied to the intermediate models (meaning that they are being created as views; see the last two of the 14), and (2) that there's nothing but green success all over that terminal. Screenshot for reference:
 
 <img src="566/screenshots/readme_img/int_run.png"  width="80%">
 
